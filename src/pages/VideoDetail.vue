@@ -10,9 +10,13 @@
         </div>
     </div>
     <div class="youkuplayer_box">
-        <!-- <div id="youkuplayer"></div> -->
-        <div class="cover_gray">
-            <img class="play_btn" src="../assets/play.png" alt="">
+        <div id="youkuplayer">
+            <div v-if="!is_play"  class="cover_box">
+                <img class="viCover" :src="viCover" alt="">
+            </div>
+            <div v-if="!is_play" @click="play" class="cover_gray">
+                <img class="play_btn" src="../assets/play.png" alt="">
+            </div>
         </div>
     </div>
     <div class="video_info">
@@ -22,27 +26,28 @@
                 <div class="view_eye">
                     <img src="../assets/view_gray.png" style="width:100%;height:100%;display:block;" alt="">
                 </div>
-                <span class="view_num">{{view_num}}</span>
+                <span class="view_num">{{viView}}</span>
             </div>
         </div>
-        <div class="describe">{{describe}}</div>
-        <div class="upload_time">上传时间: {{upload_time}}</div>
+        <div class="describe">{{viContent}}</div>
+        <div class="upload_time">上传时间: {{viUploaddate}}</div>
     </div>
     <div class="related_videos">
         <div class="related_title">相关视频</div>
-        <div class="video_container">
-            <div v-for="(item, index) in list" :key="index" class="video_item">
+        <div :class="[no_video?'': 'video_container']">
+            <div v-if="!no_video" v-for="(item, index) in list" :key="index" class="video_item">
                 <div @click="getViDetail(item)" class="cover_images">
                 <img class="img_item" :src="api.img + item.viCover" style="width:100%;height:100%;" alt="">
                 <div class="view_box">
                     <div class="view">
-                        <img src="../assets/view.png" style="width:100%;height:100%;" alt="">
+                        <img src="../assets/view.png" style="width:100%;height:100%;cursor:pointer;" alt="">
                     </div>
                     <div class="view_num">{{item.viView}}</div>
                 </div>
                 </div>
                 <div class="viTitle">{{item.viTitle}}</div>
             </div>
+            <div v-if="no_video" class="no_video">暂无相关视频</div>
         </div>
     </div>
   </div>
@@ -53,42 +58,75 @@
     name: "VideoDetail",
     data() {
       return {
-          list: [
-            {
-                viView: 0,
-                viTitle: 'iPhone 6系列更换屏幕总成教程iPhone'
-            },
-            {
-                viView: 0,
-                viTitle: 'iPhone 6系列更换屏幕总成教程iPhone'
-            }
-          ],
-          upload_time: '2019-01-8',
-          describe: 'iPhone 6系列更换屏幕总成教程iPhone 6系列更换屏幕总成教程iPhone 6系列更换屏幕总成教程',
-          viId: '',
-          view_num: 121,
-          video_title: 'iPhone 7屏幕更换教程'
+        no_video: false,
+        viCover: '',
+        is_play: false,
+        list: [],
+        viVideoid: '',
+        viContent: '',
+        viId: '',
+        viUploaddate: '',
+        viView: '',
+        video_title: 'iPhone 7屏幕更换教程'
       }
     },
     mounted() {
         this.video_title = this.$route.query.video_title;
         this.viId = this.$route.query.viId;
-        this.init()
-        // this.getVideo()
+        // this.init()
+        this.getVideo()
+        this.search()
     },
     methods: {
-        getVideo () {
-            this.api.http('get', 'getVideo', {id: this.viId}, (result) => {
-
+        play () {
+            this.is_play = true
+        },
+        search (item) {
+            let that = this
+            let obj = {
+                pageIndex: 1,
+                pageSize: 10,
+                title: this.video_title
+            }
+            this.api.http("get", 'search', obj, (result) => {
+                // debugger
+                this.total = result.data.total
+                let data = result.data.data;
+                console.log(data);
+                if (data.length > 0) {
+                    for (let i = 0; i < data.length;i++) {
+                        that.list.push(data[i])
+                    } 
+                } else {
+                    that.list.length = 0;
+                    that.no_video = true
+                }
+                that.is_show_load = false
+                that.open = true
             }, (error) => {
                 this.$toast.center(error.msg);
             })
         },
-        init () {
+        getVideo () {
+            this.api.http('get', 'getVideo', {id: this.viId}, (result) => {
+                let data = result.data;
+                this.viVideoid = data.viVideoid;
+                this.viView = data.viView;
+                this.viCover = this.api.img + data.viCover;
+                let date = new Date(Number(data.viUploaddate));
+                this.viUploaddate = date.getFullYear() + '.' + (date.getMonth() + 1) + '.' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes();
+                this.viContent = data.viContent;
+                this.init(this.viVideoid)
+            }, (error) => {
+                debugger
+                this.$toast.center(error.msg);
+            })
+        },
+        init (viVideoid) {
             var player = new YKU.Player('youkuplayer',{
                 styleid: '0',
                 client_id: '1b63c938636b6ee3',
-                vid: '替换成优酷视频ID',
+                vid: viVideoid,
                 newPlayer: true
             });
         },
@@ -108,6 +146,11 @@
     height: auto;
     background: #fff;
     margin-bottom: 10px;
+    .no_video {
+        width: inherit;
+        font-size: 12px;
+        min-height: 40px;
+    }
     .related_title {
         font-family: MicrosoftYaHeiUI;
         font-size: 16px;
@@ -162,6 +205,9 @@
     }
     .video_item {
         text-align: left;
+        .viTitle {
+        margin-top:5px;
+        }
     }
     }
 }
@@ -187,8 +233,6 @@
     .title_view {
         display: inline-block;
         width: 100%;
-        // line-height: 22px;
-        // height: 22px;
         display: flex;
         .video_title_2 {
             float: left;
@@ -202,7 +246,6 @@
            float: left;
             margin-left: 10px;
             display: inline-block;
-            // background: red;
             align-items: center;
             display: flex;
             .view_eye {
@@ -227,18 +270,45 @@
     width: calc(100% - 30px);
     padding: 0 15px 10px;
     margin-top: 15px;
-    height: 200px;
+    height: 167px;
+    max-height: 167px;
     position: relative;
+    #youkuplayer {
+        position: relative;
+        width: inherit;
+        height: inherit;
+        .cover_img {
+            position: absolute;
+            top: 0px;
+            left: 0;
+            width: inherit;
+            height: inherit;
+            z-index: 99;
+            background: rgba(0,0,0,0.50);
+        }
+    }
+    .cover_box {
+        width: inherit;
+        height: inherit;
+        position: absolute;
+        z-index: 99;
+        .viCover {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+    }
     .cover_gray {
         background: rgba(0,0,0,0.50);
         position: absolute;
         top: 0;
-        left: 15px;
+        left: 0;
         width: inherit;
         height: inherit;
         display: flex;
         align-items: center;
         justify-content: center;
+        z-index: 99;
         .play_btn {
             z-index: 9;
         }
@@ -267,10 +337,12 @@
     .back {
         width: 16px;
         height: 16px;
+        cursor: pointer;
     }
     .share {
         width: 16px;
         height: 16px;
+        cursor: pointer;
     }
 }
 </style>

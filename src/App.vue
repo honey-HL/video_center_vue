@@ -1,7 +1,9 @@
 <template>
   <div id="app">
-    <!-- <img src="./assets/logo.png"> -->
-    <router-view/>
+    <keep-alive>
+        <router-view v-if="$route.meta.keepAlive"/>
+    </keep-alive>
+    <router-view style='height: inherit;' v-if="!$route.meta.keepAlive"/>
   </div>
 </template>
 

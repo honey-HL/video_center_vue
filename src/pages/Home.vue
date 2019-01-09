@@ -12,35 +12,38 @@
       </div>
     </div>
 
-    <div class="swiper-container">
-      <div class="swiper-wrapper">
+    <!-- <div v-if="show_swiper" class="swiper-container"> -->
+      <!-- <div class="swiper-wrapper">
         <div v-for="(item, index) in swiper_list" :key="index" class="swiper-slide">
           <img :src="api.img + item.rCover" alt="">
         </div>
-        <!-- <div class="swiper-slide">
-          <img src="../assets/banner.png" alt="">
-        </div>
-        <div class="swiper-slide">
-        <img src="../assets/banner.png" alt="">
-        </div> -->
       </div>
-      <div class="swiper-pagination" id="swiper-pagination"></div>
-    </div>
+      <div class="swiper-pagination" id="swiper-pagination"></div> -->
+      <swiper :options="swiperOption">
+        <swiper-slide v-for="(slide, index) in swiper_list" :key="index">
+          <img @click="getViDetail(slide)" :src="api.img + slide.rCover" alt="">
+        </swiper-slide>
+        <div class="swiper-pagination" slot="pagination"></div>
+      </swiper>
+    <!-- </div> -->
 
     <div class="line_2"></div>
-    <div class="video_container">
+    <div ref="myscroller" class="wrap_container">
+      <div :class="[is_show_load?'mar_botm':'', 'video_container']">
       <div v-for="(item, index) in list" :key="index" class="video_item">
         <div @click="getViDetail(item)" class="cover_images">
-          <img class="img_item" :src="api.img + item.viCover" style="width:100%;height:100%;" alt="">
+          <!-- <img class="img_item" :src="api.img + item.viCover" style="width:100%;height:100%;" alt=""> -->
+          <div class="img_item" v-lazy:background-image="api.img + item.viCover"></div>
           <div class="view_box">
             <div class="view">
-                <img src="../assets/view.png" style="width:100%;height:100%;" alt="">
+              <img src="../assets/view.png" style="width:100%;height:100%;cursor:pointer;" alt="">
             </div>
             <div class="view_num">{{item.viView}}</div>
           </div>
         </div>
         <div class="viTitle">{{item.viTitle}}</div>
       </div>
+    </div>
     </div>
 
     <div v-if="is_show_load" class="bottom_box">
@@ -113,13 +116,28 @@
 </template>
 
 <script>
-import "swiper/dist/css/swiper.css";
-import Swiper from "swiper/dist/js/swiper.min.js";
+import 'swiper/dist/css/swiper.css'
+import { swiper, swiperSlide } from 'vue-awesome-swiper'
 
 export default {
   name: 'home',
+   components: {
+    swiper,
+    swiperSlide
+  },
   data () {
     return {
+      swiperOption: {
+        loop:true,
+        autoplay: true,
+        speed: 1000,
+        pagination: {
+          el: '.swiper-pagination',
+          clickable :true
+        }
+      },
+      // swiperSlides: [1, 2, 3, 4, 5, 6],
+      show_swiper: true,
       title: '',
       swiper_list: [],
       no_data: false,
@@ -137,12 +155,12 @@ export default {
       is_show_load: false,
       count: 1,
       list: [],
+      scrollTo: '',
       searchValue: ''
     }
   },
   mounted() {
     this.getRecommend()
-    // this.newSwiper()
     this.getPhoneType()
     this.getPhoneBrand()
     this.search(this.checked);
@@ -150,11 +168,20 @@ export default {
   },
   ready () {
   },
+  watch: {
+    '$route': function(to, from) {
+      if (from.name === 'detail') {
+        this.$refs.viewBox.scrollTop = this.scrollTo
+      }
+    }
+  },
   methods: {
     getViDetail (item) {
+       console.log(this.$refs.viewBox.scrollTop);
+       this.scrollTo = this.$refs.viewBox.scrollTop;
       this.$router.push({
         path: "/index/detail",
-        query: {video_title: item.viTitle, viId: item.viId}
+        query: {video_title: item.viTitle, viId: item.viId || item.rLink}
       })
     },
     getRecommend () {
@@ -166,7 +193,6 @@ export default {
           for (let i = 0; i < data.length;i++) {
             that.swiper_list.push(data[i])
           } 
-          that.newSwiper()
         } else {
           that.swiper_list = []
         }
@@ -206,6 +232,7 @@ export default {
         return
       }
       this.show_menu = false;
+      this.show_swiper = false;
       this.search(this.checked)
     },
      getList () {
@@ -219,7 +246,7 @@ export default {
         // console.log('clientHeight ', clientHeight)
         // console.log('scrollTop ', scrollTop)
         // if (scrollTop >= scrollHeight-clientHeight) {
-        if (scrollHeight-clientHeight-scrollTop <= 50) {
+        if (scrollHeight-clientHeight-scrollTop <= 0) {
           // that.open = false
           if (that.open) {
             that.is_show_load = true
@@ -231,7 +258,7 @@ export default {
                 that.is_show_load = false
                 that.no_data = true
               }
-            }, 500);
+            }, 300);
             that.open = false
           }
           console.log('count', that.count);
@@ -239,7 +266,6 @@ export default {
       }, true)
     },
     search (item) {
-      console.log(this)
       let that = this
       let obj = {
         brandId: item.pbId,
@@ -250,36 +276,23 @@ export default {
         title: this.searchValue
       }
       this.api.http("get", 'search', obj, (result) => {
-        // debugger
         this.total = result.data.total
-        let data = result.data.data;
-        console.log(data);
+        let data = result.data.data
+        that.is_show_load = false
         if (data.length > 0) {
           for (let i = 0; i < data.length;i++) {
             that.list.push(data[i])
           } 
         } else {
           that.list = []
+          that.no_data = true
         }
-        that.is_show_load = false
         that.open = true
       }, (error) => {
         this.$toast.center(error.msg);
       })
     },
     updated() {
-      this.newSwiper()
-    },
-    newSwiper () {
-      var mySwiper = new Swiper('.swiper-container', {
-        pagination: {
-          el: '.swiper-pagination'
-        },
-        slidesPerView: 1,
-        paginationClickable: true,
-        loop: true,
-        autoplay:true,
-      })
     },
     checkModel (item) {
       this.model_list.forEach(it => {
@@ -352,6 +365,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+.mar_botm {
+  margin-bottom: 50px;
+}
 .line_2 {
   width: 100%;
   height: 1px;
@@ -361,7 +377,8 @@ export default {
   overflow: hidden;
 }
 .swiper-container {
-  max-height: 130px;
+  // max-height: 130px;
+  height: 169px;
   margin-bottom: 9px;
 }
  #swiper-pagination{
@@ -532,10 +549,10 @@ export default {
   background: #fff;
 }
 .no_data {
-  line-height: 30px;
-  height: 30px;
   width: 100%;
-  text-align: center
+  text-align: center;
+  position: relative;
+  top: -20px;
 }
 .video_filter {
   border:none;
@@ -551,6 +568,7 @@ export default {
   cursor: pointer;
 }
 .video_container {
+  margin-bottom: 50px;
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -585,7 +603,7 @@ export default {
     }
     .img_item {
       width: 100%;
-      height: auto;
+      height: inherit;
       max-height: 6.8rem;
       object-fit: cover;
       background: #e6e6e6;
@@ -595,6 +613,9 @@ export default {
   }
   .video_item {
     text-align: left;
+    .viTitle {
+      margin-top:5px;
+    }
   }
 }
 .top_bar {

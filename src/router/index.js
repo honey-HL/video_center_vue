@@ -17,7 +17,7 @@ const routers = new Router({
       redirect: "/index/home",
       component: Index,
       children: [
-        { path: 'home', name: 'home', component: Home, meta: { title: "千机网技术中心" } },
+        { path: 'home', name: 'home', component: Home, meta: { title: "千机网技术中心", keepAlive: true} },
         { path: 'detail', name: 'detail', component: VideoDetail, meta: { title: "千机网技术中心" } }
       ]
     }
