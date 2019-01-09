@@ -19,7 +19,7 @@
         </div>
       </div>
       <div class="swiper-pagination" id="swiper-pagination"></div> -->
-      <swiper :options="swiperOption">
+      <swiper v-if="show_swiper" :options="swiperOption">
         <swiper-slide v-for="(slide, index) in swiper_list" :key="index">
           <img @click="getViDetail(slide)" :src="api.img + slide.rCover" alt="">
         </swiper-slide>

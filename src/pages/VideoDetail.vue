@@ -67,6 +67,7 @@
         viId: '',
         viUploaddate: '',
         viView: '',
+        modelId: '',
         video_title: 'iPhone 7屏幕更换教程'
       }
     },
@@ -86,7 +87,7 @@
             let obj = {
                 pageIndex: 1,
                 pageSize: 10,
-                title: this.video_title
+                modelId: this.modelId
             }
             this.api.http("get", 'search', obj, (result) => {
                 // debugger
@@ -112,6 +113,7 @@
                 let data = result.data;
                 this.viVideoid = data.viVideoid;
                 this.viView = data.viView;
+                this.modelId = data.pmId;
                 this.viCover = this.api.img + data.viCover;
                 let date = new Date(Number(data.viUploaddate));
                 this.viUploaddate = date.getFullYear() + '.' + (date.getMonth() + 1) + '.' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes();
