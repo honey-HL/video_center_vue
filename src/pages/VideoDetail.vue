@@ -72,25 +72,24 @@
       }
     },
     mounted() {
-        this.video_title = this.$route.query.video_title;
-        this.viId = this.$route.query.viId;
-        // this.init()
-        this.getVideo()
-        this.search()
+    },
+    created() {
+        this.viId = sessionStorage.getItem('viId');
+        console.log(this.viId);
+        this.getVideo(this.viId);
     },
     methods: {
         play () {
             this.is_play = true
         },
-        search (item) {
+        search (modelId) {
             let that = this
             let obj = {
                 pageIndex: 1,
                 pageSize: 10,
-                modelId: this.modelId
+                modelId: modelId
             }
             this.api.http("get", 'search', obj, (result) => {
-                // debugger
                 this.total = result.data.total
                 let data = result.data.data;
                 console.log(data);
@@ -108,19 +107,19 @@
                 this.$toast.center(error.msg);
             })
         },
-        getVideo () {
-            this.api.http('get', 'getVideo', {id: this.viId}, (result) => {
+        getVideo (viId) {
+            this.api.http('get', 'getVideo', {id: viId}, (result) => {
                 let data = result.data;
                 this.viVideoid = data.viVideoid;
                 this.viView = data.viView;
-                this.modelId = data.pmId;
+                this.video_title = data.viTitle;
                 this.viCover = this.api.img + data.viCover;
                 let date = new Date(Number(data.viUploaddate));
                 this.viUploaddate = date.getFullYear() + '.' + (date.getMonth() + 1) + '.' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes();
                 this.viContent = data.viContent;
                 this.init(this.viVideoid)
+                this.search(data.pmId)
             }, (error) => {
-                debugger
                 this.$toast.center(error.msg);
             })
         },

@@ -160,10 +160,11 @@ export default {
     }
   },
   mounted() {
+    this.remove()
     this.getRecommend()
     this.getPhoneType()
     this.getPhoneBrand()
-    this.search(this.checked);
+    this.search(this.checked)
     this.getList()
   },
   ready () {
@@ -176,12 +177,18 @@ export default {
     }
   },
   methods: {
+    remove () {
+      if (sessionStorage.getItem('viId')) {
+        sessionStorage.removeItem('viId')
+      }
+    },
     getViDetail (item) {
-       console.log(this.$refs.viewBox.scrollTop);
-       this.scrollTo = this.$refs.viewBox.scrollTop;
+      console.log(this.$refs.viewBox.scrollTop);
+      this.scrollTo = this.$refs.viewBox.scrollTop;
+      this.$store.dispatch('setViId', item.viId || item.rLink)
+      sessionStorage.setItem('viId', item.viId || item.rLink)
       this.$router.push({
-        path: "/index/detail",
-        query: {video_title: item.viTitle, viId: item.viId || item.rLink}
+        path: "/index/detail"
       })
     },
     getRecommend () {

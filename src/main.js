@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 import api from './common/api'
 import VueLazyload from 'vue-lazyload'
+import store from './store'
 
 // 全局引入Toast
 import './components/Toast/toast.css';
@@ -24,6 +25,7 @@ Vue.prototype.api = api
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })
