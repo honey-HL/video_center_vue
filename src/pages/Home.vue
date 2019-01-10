@@ -183,19 +183,20 @@ export default {
       }
     },
     getViDetail (item) {
-      console.log(this.$refs.viewBox.scrollTop);
       this.scrollTo = this.$refs.viewBox.scrollTop;
       this.$store.dispatch('setViId', item.viId || item.rLink)
       sessionStorage.setItem('viId', item.viId || item.rLink)
       this.$router.push({
-        path: "/index/detail"
+        path: "/index/detail",
+        query: {
+          id: item.viId || item.rLink
+        }
       })
     },
     getRecommend () {
       let that = this
       this.api.http("get", 'getRecommend', {}, (result) => {
         let data = result.data;
-        console.log(data);
         if (data.length > 0) {
           for (let i = 0; i < data.length;i++) {
             that.swiper_list.push(data[i])

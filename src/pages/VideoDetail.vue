@@ -68,17 +68,27 @@
         viUploaddate: '',
         viView: '',
         modelId: '',
-        video_title: 'iPhone 7屏幕更换教程'
+        video_title: ''
       }
     },
     mounted() {
     },
     created() {
-        this.viId = sessionStorage.getItem('viId');
+        this.viId = sessionStorage.getItem('viId') || this.getUrlParam('id');
         console.log(this.viId);
         this.getVideo(this.viId);
     },
     methods: {
+          /**获取url中的参数**/
+        getUrlParam (name) {
+            let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+            let r = window.location.hash.split('=')[1]; //匹配目标参数
+            if(r != null){
+                return unescape(r);
+            }else{
+                return null; //返回参数值
+            }
+        },
         play () {
             this.is_play = true
         },
@@ -131,7 +141,18 @@
                 newPlayer: true
             });
         },
-        share () {},
+        share () {
+            let link = location.href;
+            var Url2 = link;
+            var oInput = document.createElement('input');
+            oInput.value = Url2;
+            document.body.appendChild(oInput);
+            oInput.select(); // 选择对象
+            document.execCommand("Copy"); // 执行浏览器复制命令
+            oInput.className = 'oInput';
+            oInput.style.display='none';
+            this.$toast.bottom('复制成功');
+        },
         back () {
             this.$router.go(-1);
         }

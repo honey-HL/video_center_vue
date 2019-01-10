@@ -6,14 +6,21 @@ Vue.use(Vuex)
 const module = {
     state: {
         viId: '',
+        share: '',
         video_title: ''
     },
     mutations: {
+        setShare(state, value) {
+            state.share = value
+        },
         setViId(state, value) {
             state.viId = value
         }
     },
     actions: {
+        setShare(context, value) {
+            context.commit('setShare', value)
+        },
         setViId(context, value) {
             context.commit('setViId', value)
         }
