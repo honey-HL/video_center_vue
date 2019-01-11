@@ -415,7 +415,9 @@ export default {
 }
 .swiper-container {
   // max-height: 130px;
+  width: 100%;
   height: 169px;
+  overflow: hidden;
   margin-bottom: 9px;
 }
  #swiper-pagination{
@@ -649,9 +651,14 @@ export default {
     }
   }
   .video_item {
+    width:100%;
     text-align: left;
     .viTitle {
+      width: 12rem;
       margin-top:5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 }

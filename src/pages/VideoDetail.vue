@@ -226,11 +226,16 @@
         }
     }
     .video_item {
+        width:100%;
         text-align: left;
         .viTitle {
-        margin-top:5px;
+            width: 12rem;
+            margin-top:5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            }
         }
-    }
     }
 }
 .video_info {
@@ -263,6 +268,10 @@
             color: #333333;
             letter-spacing: 0;
             font-weight: bold;
+            width: inherit;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .view_box {
            float: left;
@@ -355,6 +364,10 @@
         font-size: 16px;
         color: #666666;
         letter-spacing: 0;
+        width: calc(100% - 50px);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     .back {
         width: 16px;
