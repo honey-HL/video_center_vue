@@ -246,6 +246,8 @@
     padding: 0 15px;
     .describe {
         text-align: left;
+        font-size:14px;
+        margin-top:10px;
     }
     .upload_time {
         float: left;
@@ -254,8 +256,8 @@
         color: #999999;
         letter-spacing: 0;
         text-align: center;
-        padding-top: 5px;
-        padding-bottom: 10px;
+        padding-top: 10px;
+        padding-bottom: 16px;
     }
     .title_view {
         display: inline-block;
@@ -268,10 +270,8 @@
             color: #333333;
             letter-spacing: 0;
             font-weight: bold;
-            width: inherit;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            text-align: left;
+            max-width: 20rem;
         }
         .view_box {
            float: left;
