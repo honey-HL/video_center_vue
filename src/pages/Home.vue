@@ -154,6 +154,7 @@ export default {
       },
       is_show_load: false,
       count: 1,
+      pageSize: 20,
       list: [],
       scrollTo: '',
       searchValue: ''
@@ -257,7 +258,13 @@ export default {
         if (scrollHeight-clientHeight-scrollTop <= 0) {
           // that.open = false
           if (that.open) {
-            that.is_show_load = true
+            if (that.list.length >= that.total || that.list.length < that.pageSize) {
+              that.is_show_load = false
+              that.no_data = true
+            } else {
+              that.no_data = false
+              that.is_show_load = true
+            }
             setTimeout(function() {
               that.count++;
               if (that.list.length < that.total) {
@@ -280,7 +287,7 @@ export default {
         typeId: item.ptId,
         modelId: item.pmId,
         pageIndex: this.count,
-        pageSize: 20,
+        pageSize: this.pageSize,
         title: this.searchValue
       }
       this.api.http("get", 'search', obj, (result) => {
@@ -363,14 +370,14 @@ export default {
       })
     },
     blurInput () {
-       if (this.searchValue === '') {
-        this.show_swiper = true;
-        this.checked.brandId = ''
-        this.checked.typeId = ''
-        this.checked.modelId = ''
-        this.count = 1
-        this.search(this.checked)
-      }
+      //  if (this.searchValue === '') {
+      //   this.show_swiper = true;
+      //   this.checked.brandId = ''
+      //   this.checked.typeId = ''
+      //   this.checked.modelId = ''
+      //   this.count = 1
+      //   this.search(this.checked)
+      // }
     },
     focusInput () {
     },
