@@ -375,7 +375,18 @@ export default {
     focusInput () {
     },
     searchEnterFun () {
-      this.show_swiper = false
+      if (this.searchValue === '') {
+        this.show_swiper = true;
+        this.checked.brandId = ''
+        this.checked.typeId = ''
+        this.checked.modelId = ''
+      } else {
+        this.show_swiper = false
+      }
+      if (this.list.length > 0) {
+        this.list = []
+      }
+      this.count = 1
       this.search(this.checked)
     }
   },
