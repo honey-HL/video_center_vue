@@ -38,7 +38,7 @@
             <div v-if="!no_video" v-for="(item, index) in list" :key="index" class="video_item">
                 <div @click="getViDetail(item)" class="cover_images">
                 <img class="img_item" :src="api.img + item.viCover" style="width:100%;height:100%;" alt="">
-                <div class="view_box">
+                <div class="view_box_2">
                     <div class="view">
                         <img src="../assets/view.png" style="width:100%;height:100%;cursor:pointer;" alt="">
                     </div>
@@ -170,8 +170,10 @@
     margin-bottom: 10px;
     .no_video {
         width: inherit;
-        font-size: 12px;
-        min-height: 40px;
+        font-size: 14px;
+        height: 40px;
+        line-height: 40px;
+        padding-bottom: 20px;
     }
     .related_title {
         font-family: MicrosoftYaHeiUI;
@@ -191,20 +193,20 @@
     .cover_images {
         position: relative;
         width: 100%;
-        height: 6.8rem;
-        .view_box {
-        max-width: 60px;
-        height: 15px;
-        position: absolute;
-        bottom: 8px;
-        right: 6px;
-        -webkit-box-pack: center;
-        -ms-flex-pack: center;
-        justify-content: center;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
-        color: #fff;
+        height: 8rem;
+        .view_box_2 {
+            max-width: 60px;
+            height: 15px;
+            position: absolute;
+            bottom: 8px;
+            right: 6px;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            align-items: center;
+            color: #fff;
         .view {
             float: left;
             width: 15px;
@@ -216,13 +218,13 @@
         }
         }
         .img_item {
-        width: 100%;
-        height: auto;
-        max-height: 6.8rem;
-        object-fit: cover;
-        background: #e6e6e6;
-        background-size: cover !important;
-        background-position: center !important;
+            width: 100%;
+            height: auto;
+            max-height: 8rem;
+            object-fit: cover;
+            background: #e6e6e6;
+            background-size: cover !important;
+            background-position: center !important;
         }
     }
     .video_item {
@@ -247,7 +249,7 @@
     .describe {
         text-align: left;
         font-size:14px;
-        margin-top:10px;
+        line-height: 22px;
     }
     .upload_time {
         float: left;
@@ -262,7 +264,7 @@
     .title_view {
         display: inline-block;
         width: 100%;
-        display: flex;
+        position: relative;
         .video_title_2 {
             float: left;
             font-family: MicrosoftYaHeiUI-Bold;
@@ -271,14 +273,15 @@
             letter-spacing: 0;
             font-weight: bold;
             text-align: left;
-            max-width: 20rem;
+            width:100%;
+            word-break:break-all;
         }
         .view_box {
-           float: left;
+            position: absolute;
+            right: 15px;
+            bottom: 0;
+            float: left;
             margin-left: 10px;
-            display: inline-block;
-            align-items: center;
-            display: flex;
             .view_eye {
                 display: inline-block;
                 width: 15px;

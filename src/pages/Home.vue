@@ -592,6 +592,7 @@ export default {
   text-align: center;
   position: relative;
   top: -20px;
+  font-size: 14px;
 }
 .video_filter {
   border:none;
@@ -616,7 +617,7 @@ export default {
   .cover_images {
     position: relative;
     width: 100%;
-    height: 6.8rem;
+    height: 8rem;
     .view_box {
       max-width: 60px;
       height: 15px;
@@ -643,7 +644,7 @@ export default {
     .img_item {
       width: 100%;
       height: inherit;
-      max-height: 6.8rem;
+      max-height: 8rem;
       object-fit: cover;
       background: #e6e6e6;
       background-size: cover !important;
@@ -653,12 +654,19 @@ export default {
   .video_item {
     width:100%;
     text-align: left;
+    margin-top: -7px;
     .viTitle {
+      font-size:14px;
       width: 12rem;
+      height: 38px;
+      line-height: 18px;
       margin-top:5px;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      word-break: break-all;
     }
   }
 }
