@@ -20,6 +20,7 @@ body{
 }
   /* -webkit-overflow-scrolling: touch; */
 /* -webkit-transform:translate3d(0,0,0); */
+/* -webkit-overflow-scrolling:touch */
 ::-webkit-scrollbar {
   width: 0;
   height: 0;

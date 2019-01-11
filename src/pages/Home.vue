@@ -280,7 +280,7 @@ export default {
         typeId: item.ptId,
         modelId: item.pmId,
         pageIndex: this.count,
-        pageSize: 10,
+        pageSize: 20,
         title: this.searchValue
       }
       this.api.http("get", 'search', obj, (result) => {
@@ -312,6 +312,7 @@ export default {
     getPhoneModel (brandId) {
       this.api.http("get", 'getPhoneModel', {brandId: brandId}, (result) => {
         let data = result.data;
+        this.model_list.length = 0;
         if (data.length > 0) {
            for (let i in data) {
             data[i].clicked = false;
@@ -361,10 +362,20 @@ export default {
         this.$toast.center(error.msg);
       })
     },
-    blurInput () {},
+    blurInput () {
+       if (this.searchValue === '') {
+        this.show_swiper = true;
+        this.checked.brandId = ''
+        this.checked.typeId = ''
+        this.checked.modelId = ''
+        this.count = 1
+        this.search(this.checked)
+      }
+    },
     focusInput () {
     },
     searchEnterFun () {
+      this.show_swiper = false
       this.search(this.checked)
     }
   },
